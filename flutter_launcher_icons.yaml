@@ -1,0 +1,7 @@
+flutter_launcher_icons:
+  image_path: "assets/logo/logo.png"
+  android:
+    notification_icon: "notification_icon"
+  ios: true
+  macos:
+    generate: true
