@@ -1,4 +1,4 @@
-package com.example.standup_sync
+package com.example.synk
 
 import io.flutter.embedding.android.FlutterActivity
 

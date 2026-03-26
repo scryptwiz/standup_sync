@@ -1,7 +1,12 @@
 flutter_launcher_icons:
-  image_path: "assets/logo/logo.png"
-  android:
-    notification_icon: "notification_icon"
-  ios: true
+  image_path: "assets/logo/Light.png"
+  android: true
+  adaptive_icon_background: "#1A2C42"
+  adaptive_icon_foreground: "assets/logo/adaptive-icon.png"
+  ios:
+    enable: true
+    image_path: "assets/logo/Light.png"
+    dark_path: "assets/logo/Light.png"
+    tinted_path: "assets/logo/Tinted.png"
   macos:
     generate: true
