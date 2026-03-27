@@ -28,33 +28,56 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget getCurrentStepWidget() {
     switch (currentStep) {
       case 0:
-        return OnboardingStepVoice();
+        return const OnboardingStepVoice();
       case 1:
-        return OnboardingStepTask();
+        return const OnboardingStepTask();
       default:
-        return OnboardingStepRank();
+        return const OnboardingStepRank();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AnimatedSwitcher(
-              duration: Duration(milliseconds: 250),
-              child: getCurrentStepWidget(),
-            ),
-            OnboardingButton(
-              text: "Next",
-              leadingIcon: Icons.arrow_forward_ios,
-              onPressed: nextStep,
-            ),
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeInCubic,
+                  transitionBuilder: (child, animation) {
+                    final offsetAnimation = Tween<Offset>(
+                      begin: const Offset(0.06, 0),
+                      end: Offset.zero,
+                    ).animate(animation);
+
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: KeyedSubtree(
+                    key: ValueKey(currentStep),
+                    child: getCurrentStepWidget(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              OnboardingButton(
+                text: currentStep < lastStep ? "Next" : "Get Started",
+                leadingIcon: Icons.arrow_forward_ios,
+                onPressed: nextStep,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -4,11 +4,13 @@ import 'package:synk/core/app_colors.dart';
 class OnboardingSubtitle extends StatelessWidget {
   final String text;
   final double extraSpacing;
+  final bool isCentered;
 
   const OnboardingSubtitle({
     super.key,
     required this.text,
     this.extraSpacing = 0,
+    this.isCentered = false,
   });
 
   @override
@@ -17,9 +19,10 @@ class OnboardingSubtitle extends StatelessWidget {
       padding: EdgeInsets.only(bottom: extraSpacing),
       child: Text(
         text,
+        textAlign: isCentered ? TextAlign.center : TextAlign.start,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: AppColors.textSubheadline,
-          fontSize: 16,
+          fontSize: 18,
         ),
       ),
     );

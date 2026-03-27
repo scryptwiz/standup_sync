@@ -8,17 +8,27 @@ class OnboardingStepRank extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        OnboardingImage(imagePath: "assets/onboarding/onboarding_3.png"),
-        OnboardingHeadline(leadingText: "Claim Your", trailingText: "Glory"),
-        OnboardingSubtitle(
-          text:
-              "Turn your consistency into tangible\nrewards. Unlock exclusive badges\nand milestones as you grow.",
-          extraSpacing: 32,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OnboardingImage(imagePath: "assets/onboarding/onboarding_3.png"),
+            OnboardingHeadline(
+              leadingText: "Claim Your",
+              trailingText: "Glory",
+            ),
+            const SizedBox(height: 12),
+            OnboardingSubtitle(
+              text:
+                  "Turn your consistency into tangible\nrewards. Unlock exclusive badges\nand milestones as you grow.",
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

@@ -8,16 +8,27 @@ class OnboardingStepVoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        OnboardingHeadline(leadingText: "Voice to", trailingText: "Standups."),
-        OnboardingSubtitle(
-          text:
-              "Simply speak your progress.\nWe'll turn your words into\norganized notes.",
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 360),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OnboardingHeadline(
+              leadingText: "Voice to",
+              trailingText: "Standups.",
+            ),
+            const SizedBox(height: 12),
+            OnboardingSubtitle(
+              text:
+                  "Simply speak your progress.\nWe'll turn your words into\norganized notes.",
+            ),
+            OnboardingImage(imagePath: "assets/onboarding/onboarding_1.png"),
+          ],
         ),
-        OnboardingImage(imagePath: "assets/onboarding/onboarding_1.png"),
-      ],
+      ),
     );
   }
 }
