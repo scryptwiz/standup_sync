@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synk/core/constants/app_assets.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_headline.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_image.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_subtitle.dart';
@@ -22,7 +23,10 @@ class OnboardingStepTask extends StatelessWidget {
               text:
                   "Keep your momentum high by\nmanaging your daily objectives. Every\ntick is a step closer to your goals.",
             ),
-            OnboardingImage(imagePath: "assets/onboarding/onboarding_2.png"),
+            OnboardingImage(
+              imagePath: AppAssets.folder("onboarding", "onboarding_2.svg"),
+              isSvg: true,
+            ),
           ],
         ),
       ),

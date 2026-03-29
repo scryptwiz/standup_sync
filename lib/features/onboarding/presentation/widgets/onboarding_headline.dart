@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:synk/core/app_colors.dart';
 
 class OnboardingHeadline extends StatelessWidget {
@@ -37,6 +38,7 @@ class OnboardingHeadline extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 48,
               color: AppColors.textSecondary,
+              fontFamily: GoogleFonts.manrope().fontFamily,
             ),
           ),
       ],

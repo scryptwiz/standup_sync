@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synk/core/constants/app_assets.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_headline.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_image.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_subtitle.dart';
@@ -16,7 +17,10 @@ class OnboardingStepRank extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            OnboardingImage(imagePath: "assets/onboarding/onboarding_3.png"),
+            OnboardingImage(
+              imagePath: AppAssets.folder("onboarding", "onboarding_3.svg"),
+              isSvg: true,
+            ),
             OnboardingHeadline(
               leadingText: "Claim Your",
               trailingText: "Glory",

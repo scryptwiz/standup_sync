@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:synk/core/app_colors.dart';
 
 class OnboardingSubtitle extends StatelessWidget {
@@ -23,6 +24,7 @@ class OnboardingSubtitle extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: AppColors.textSubheadline,
           fontSize: 18,
+          fontFamily: GoogleFonts.inter().fontFamily,
         ),
       ),
     );

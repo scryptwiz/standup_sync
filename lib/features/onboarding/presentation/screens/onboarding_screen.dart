@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:synk/features/onboarding/presentation/widgets/onboarding_button.dart';
+import 'package:synk/core/widgets/button.dart';
+import 'package:synk/features/auth/presentation/screens/signin_screen.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_step_rank.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_step_task.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_step_voice.dart';
@@ -14,27 +15,33 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   int currentStep = 0;
   static const int lastStep = 2;
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   void nextStep() {
     if (currentStep < lastStep) {
-      setState(() {
-        currentStep++;
-      });
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
     } else {
-      // finish onboarding
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SigninScreen()),
+      );
     }
   }
 
-  Widget getCurrentStepWidget() {
-    switch (currentStep) {
-      case 0:
-        return const OnboardingStepVoice();
-      case 1:
-        return const OnboardingStepTask();
-      default:
-        return const OnboardingStepRank();
-    }
-  }
+  List<Widget> get _steps => const [
+    OnboardingStepVoice(),
+    OnboardingStepTask(),
+    OnboardingStepRank(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -46,34 +53,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  transitionBuilder: (child, animation) {
-                    final offsetAnimation = Tween<Offset>(
-                      begin: const Offset(0.06, 0),
-                      end: Offset.zero,
-                    ).animate(animation);
-
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
-                      ),
-                    );
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: _steps.length,
+                  onPageChanged: (index) {
+                    setState(() {
+                      currentStep = index;
+                    });
                   },
-                  child: KeyedSubtree(
-                    key: ValueKey(currentStep),
-                    child: getCurrentStepWidget(),
-                  ),
+                  itemBuilder: (_, index) => _steps[index],
                 ),
               ),
               const SizedBox(height: 12),
-              OnboardingButton(
+              Button(
                 text: currentStep < lastStep ? "Next" : "Get Started",
-                leadingIcon: Icons.arrow_forward_ios,
+                icon: Icons.arrow_forward_ios,
+                iconPosition: AppButtonIconPosition.trailing,
                 onPressed: nextStep,
               ),
             ],

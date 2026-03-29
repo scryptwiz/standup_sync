@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synk/core/constants/app_assets.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_headline.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_image.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_subtitle.dart';
@@ -25,7 +26,10 @@ class OnboardingStepVoice extends StatelessWidget {
               text:
                   "Simply speak your progress.\nWe'll turn your words into\norganized notes.",
             ),
-            OnboardingImage(imagePath: "assets/onboarding/onboarding_1.png"),
+            OnboardingImage(
+              imagePath: AppAssets.folder("onboarding", "onboarding_1.svg"),
+              isSvg: true,
+            ),
           ],
         ),
       ),
