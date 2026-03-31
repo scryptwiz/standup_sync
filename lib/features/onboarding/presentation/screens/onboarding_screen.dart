@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:synk/core/constants/app_spacing.dart';
 import 'package:synk/core/widgets/button.dart';
 import 'package:synk/features/auth/presentation/screens/signin_screen.dart';
 import 'package:synk/features/onboarding/presentation/widgets/onboarding_step_rank.dart';
@@ -48,7 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: AppSpacing.onboardingScreenPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -64,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   itemBuilder: (_, index) => _steps[index],
                 ),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.h12,
               Button(
                 text: currentStep < lastStep ? "Next" : "Get Started",
                 icon: Icons.arrow_forward_ios,

@@ -1,15 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:synk/core/app_colors.dart';
+import 'package:synk/core/constants/app_assets.dart';
+import 'package:synk/core/constants/app_spacing.dart';
 import 'package:synk/core/widgets/button.dart';
 import 'package:synk/features/auth/presentation/screens/signup_screen.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_gradient_header.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_input.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_section_divider.dart';
+import 'package:synk/features/auth/presentation/widgets/auth_third_party.dart';
+import 'package:synk/core/utils/validators.dart';
+import 'package:synk/utils/app_logger.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
+
+  @override
+  State<SigninScreen> createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+  String? _errorMessage;
+  String? _emailError;
+  String? _passwordError;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  bool _validateInputs() {
+    setState(() {
+      _emailError = Validators.email(_emailController.text);
+      _passwordError = Validators.password(_passwordController.text);
+    });
+    return _emailError == null && _passwordError == null;
+  }
+
+  void signInWithEmail() async {
+    if (!_validateInputs()) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final res = await Supabase.instance.client.auth.signInWithPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (res.user != null && mounted) {
+        Console.log('User signed in: ${res.user}');
+      }
+    } on AuthException catch (e) {
+      setState(() => _errorMessage = e.message);
+    } catch (e) {
+      setState(() => _errorMessage = 'Sign in failed: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +78,7 @@ class SigninScreen extends StatelessWidget {
           const AuthTopGradientHeader(),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+              padding: AppSpacing.authScreenPadding,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 420),
@@ -36,7 +94,7 @@ class SigninScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      AppSpacing.h4,
                       Text(
                         "Sign in to continue.",
                         style: TextStyle(
@@ -45,48 +103,74 @@ class SigninScreen extends StatelessWidget {
                           fontFamily: GoogleFonts.inter().fontFamily,
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      const AuthInput(
+                      if (_errorMessage != null) ...[AppSpacing.h12],
+                      if (_errorMessage != null)
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: Text(
+                            _errorMessage!,
+                            style: TextStyle(
+                              color: Colors.red.shade800,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      if (_errorMessage == null) ...[
+                        AppSpacing.h24,
+                      ] else ...[
+                        AppSpacing.h12,
+                      ],
+                      AuthInput(
+                        controller: _emailController,
                         placeholder: 'Email',
                         icon: Icons.email_outlined,
+                        errorText: _emailError,
+                        onChanged: (_) {
+                          if (_emailError != null) {
+                            setState(() => _emailError = null);
+                          }
+                        },
                       ),
-                      const SizedBox(height: 12),
-                      const AuthInput(
+                      AppSpacing.h12,
+                      AuthInput(
+                        controller: _passwordController,
                         placeholder: 'Password',
                         icon: Icons.lock_outline,
                         isPassword: true,
+                        errorText: _passwordError,
+                        onChanged: (_) {
+                          if (_passwordError != null) {
+                            setState(() => _passwordError = null);
+                          }
+                        },
                       ),
-                      const SizedBox(height: 24),
-                      const Button(text: "Sign In"),
-                      const SizedBox(height: 24),
+                      AppSpacing.h24,
+                      Button(
+                        text: "Sign In",
+                        isLoading: _isLoading,
+                        loadingText: "Signing in...",
+                        onPressed: signInWithEmail,
+                      ),
+                      AppSpacing.h24,
                       const AuthSectionDivider(),
-                      const SizedBox(height: 24),
-                      Button(
+                      AppSpacing.h24,
+                      AuthThirdParty(
                         text: 'Continue with Google',
-                        variant: AppButtonVariant.outline,
-                        customIcon: const FaIcon(
-                          FontAwesomeIcons.google,
-                          size: 20,
-                        ),
-                        iconPosition: AppButtonIconPosition.leading,
-                        contentAlignment: MainAxisAlignment.center,
-                        iconSpacing: 12,
+                        iconPath: AppAssets.logo('google.svg'),
                         onPressed: () {},
                       ),
-                      const SizedBox(height: 12),
-                      Button(
+                      AppSpacing.h12,
+                      AuthThirdParty(
                         text: 'Continue with Apple',
-                        variant: AppButtonVariant.outline,
-                        customIcon: const FaIcon(
-                          FontAwesomeIcons.apple,
-                          size: 20,
-                        ),
-                        iconPosition: AppButtonIconPosition.leading,
-                        contentAlignment: MainAxisAlignment.center,
-                        iconSpacing: 12,
+                        iconPath: AppAssets.logo('apple.svg'),
                         onPressed: () {},
                       ),
-                      const SizedBox(height: 12),
+                      AppSpacing.h12,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

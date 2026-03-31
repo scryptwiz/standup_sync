@@ -6,6 +6,9 @@ class AuthInput extends StatefulWidget {
   final String? placeholder;
   final IconData? icon;
   final bool isPassword;
+  final TextEditingController? controller;
+  final String? errorText;
+  final ValueChanged<String>? onChanged;
 
   const AuthInput({
     super.key,
@@ -13,6 +16,9 @@ class AuthInput extends StatefulWidget {
     this.placeholder,
     this.icon,
     this.isPassword = false,
+    this.controller,
+    this.errorText,
+    this.onChanged,
   });
 
   @override
@@ -34,11 +40,19 @@ class _AuthInputState extends State<AuthInput> {
           ),
         const SizedBox(height: 8),
         TextField(
+          controller: widget.controller,
+          onChanged: widget.onChanged,
           obscureText: widget.isPassword ? _obscure : false,
           decoration: InputDecoration(
             hintText: widget.placeholder,
+            errorText: widget.errorText,
             prefixIcon: widget.icon != null
-                ? Icon(widget.icon, color: AppColors.textTertiary)
+                ? Icon(
+                    widget.icon,
+                    color: widget.errorText != null
+                        ? Colors.red.shade400
+                        : AppColors.textTertiary,
+                  )
                 : null,
             suffixIcon: widget.isPassword
                 ? IconButton(
@@ -66,6 +80,14 @@ class _AuthInputState extends State<AuthInput> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: AppColors.navyMid),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red.shade400),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red.shade600, width: 1.5),
             ),
             hintStyle: TextStyle(color: AppColors.textTertiary),
           ),

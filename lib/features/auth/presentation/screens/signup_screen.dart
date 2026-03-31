@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:synk/core/app_colors.dart';
+import 'package:synk/core/constants/app_assets.dart';
+import 'package:synk/core/constants/app_spacing.dart';
 import 'package:synk/core/widgets/button.dart';
 import 'package:synk/features/auth/presentation/screens/signin_screen.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_gradient_header.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_input.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_section_divider.dart';
+import 'package:synk/features/auth/presentation/widgets/auth_third_party.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -20,7 +22,7 @@ class SignupScreen extends StatelessWidget {
           const AuthTopGradientHeader(),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+              padding: AppSpacing.authScreenPadding,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 420),
@@ -36,7 +38,7 @@ class SignupScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      AppSpacing.h4,
                       Text(
                         "Create an account to continue.",
                         style: TextStyle(
@@ -45,53 +47,39 @@ class SignupScreen extends StatelessWidget {
                           fontFamily: GoogleFonts.inter().fontFamily,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      AppSpacing.h24,
                       const AuthInput(
                         placeholder: 'Username',
                         icon: Icons.person_outline,
                       ),
-                      const SizedBox(height: 12),
+                      AppSpacing.h12,
                       const AuthInput(
                         placeholder: 'Email',
                         icon: Icons.email_outlined,
                       ),
-                      const SizedBox(height: 12),
+                      AppSpacing.h12,
                       const AuthInput(
                         placeholder: 'Password',
                         icon: Icons.lock_outline,
                         isPassword: true,
                       ),
-                      const SizedBox(height: 24),
+                      AppSpacing.h24,
                       const Button(text: "Sign Up"),
-                      const SizedBox(height: 24),
+                      AppSpacing.h24,
                       const AuthSectionDivider(),
-                      const SizedBox(height: 24),
-                      Button(
+                      AppSpacing.h24,
+                      AuthThirdParty(
                         text: 'Continue with Google',
-                        variant: AppButtonVariant.outline,
-                        customIcon: const FaIcon(
-                          FontAwesomeIcons.google,
-                          size: 20,
-                        ),
-                        iconPosition: AppButtonIconPosition.leading,
-                        contentAlignment: MainAxisAlignment.center,
-                        iconSpacing: 12,
+                        iconPath: AppAssets.logo('google.svg'),
                         onPressed: () {},
                       ),
-                      const SizedBox(height: 12),
-                      Button(
+                      AppSpacing.h12,
+                      AuthThirdParty(
                         text: 'Continue with Apple',
-                        variant: AppButtonVariant.outline,
-                        customIcon: const FaIcon(
-                          FontAwesomeIcons.apple,
-                          size: 20,
-                        ),
-                        iconPosition: AppButtonIconPosition.leading,
-                        contentAlignment: MainAxisAlignment.center,
-                        iconSpacing: 12,
+                        iconPath: AppAssets.logo('apple.svg'),
                         onPressed: () {},
                       ),
-                      const SizedBox(height: 12),
+                      AppSpacing.h12,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

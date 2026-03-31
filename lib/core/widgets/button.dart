@@ -9,6 +9,8 @@ enum AppButtonIconPosition { leading, trailing }
 class Button extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
+  final bool isLoading;
+  final String? loadingText;
 
   // New props
   final AppButtonVariant variant;
@@ -27,6 +29,8 @@ class Button extends StatelessWidget {
     super.key,
     required this.text,
     this.onPressed,
+    this.isLoading = false,
+    this.loadingText,
     this.variant = AppButtonVariant.filled,
     this.icon,
     this.customIcon,
@@ -44,31 +48,61 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isOutline = variant == AppButtonVariant.outline;
+    final bool isDisabled = onPressed == null || isLoading;
+    final bool useLoadingForeground = isLoading && !isOutline;
 
     final Color effectiveForeground =
         foregroundColor ?? (isOutline ? AppColors.textPrimary : Colors.white);
 
+    final Color disabledForeground = effectiveForeground.withValues(
+      alpha: 0.65,
+    );
+    final Color activeForeground = useLoadingForeground
+        ? Colors.white
+        : isDisabled
+        ? disabledForeground
+        : effectiveForeground;
+
     final Widget textWidget = Text(
-      text,
+      isLoading ? (loadingText ?? text) : text,
       style: TextStyle(
         fontSize: 16,
+        color: activeForeground,
         fontFamily: GoogleFonts.inter().fontFamily,
         fontWeight: FontWeight.w600,
       ),
     );
 
     final Widget? iconWidget =
-        customIcon ?? (icon != null ? Icon(icon, size: 20) : null);
+        customIcon ??
+        (icon != null ? Icon(icon, size: 20, color: activeForeground) : null);
+
+    final Widget? leadingWidget = isLoading
+        ? SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(activeForeground),
+            ),
+          )
+        : iconWidget;
 
     final List<Widget> rowChildren = [
-      if (iconWidget != null && iconPosition == AppButtonIconPosition.leading)
-        iconWidget,
-      if (iconWidget != null && iconPosition == AppButtonIconPosition.leading)
+      if (leadingWidget != null &&
+          iconPosition == AppButtonIconPosition.leading)
+        leadingWidget,
+      if (leadingWidget != null &&
+          iconPosition == AppButtonIconPosition.leading)
         SizedBox(width: iconSpacing),
       textWidget,
-      if (iconWidget != null && iconPosition == AppButtonIconPosition.trailing)
+      if (!isLoading &&
+          iconWidget != null &&
+          iconPosition == AppButtonIconPosition.trailing)
         SizedBox(width: iconSpacing),
-      if (iconWidget != null && iconPosition == AppButtonIconPosition.trailing)
+      if (!isLoading &&
+          iconWidget != null &&
+          iconPosition == AppButtonIconPosition.trailing)
         iconWidget,
     ];
 
@@ -82,9 +116,9 @@ class Button extends StatelessWidget {
       return SizedBox(
         width: double.infinity,
         child: OutlinedButton(
-          onPressed: onPressed ?? () {},
+          onPressed: isDisabled ? null : onPressed,
           style: OutlinedButton.styleFrom(
-            foregroundColor: effectiveForeground,
+            foregroundColor: activeForeground,
             backgroundColor: outlineBackgroundColor ?? const Color(0xFFF5F5F5),
             minimumSize: const Size(double.infinity, 56),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -105,18 +139,23 @@ class Button extends StatelessWidget {
       width: double.infinity,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppColors.gradientStart, AppColors.gradientEnd],
-            transform: GradientRotation(0.7853981634),
+          gradient: LinearGradient(
+            colors: isDisabled
+                ? [
+                    AppColors.gradientStart.withValues(alpha: 0.55),
+                    AppColors.gradientEnd.withValues(alpha: 0.55),
+                  ]
+                : [AppColors.gradientStart, AppColors.gradientEnd],
+            transform: const GradientRotation(0.7853981634),
           ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: ElevatedButton(
-          onPressed: onPressed ?? () {},
+          onPressed: isDisabled ? null : onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            foregroundColor: effectiveForeground,
+            foregroundColor: activeForeground,
             minimumSize: const Size(double.infinity, 56),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
