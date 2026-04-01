@@ -5,6 +5,7 @@ import 'package:synk/core/app_colors.dart';
 import 'package:synk/core/constants/app_assets.dart';
 import 'package:synk/core/constants/app_spacing.dart';
 import 'package:synk/core/widgets/button.dart';
+import 'package:synk/core/widgets/form_error_banner.dart';
 import 'package:synk/features/auth/presentation/screens/signup_screen.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_gradient_header.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_input.dart';
@@ -105,21 +106,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       ),
                       if (_errorMessage != null) ...[AppSpacing.h12],
                       if (_errorMessage != null)
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.red.shade200),
-                          ),
-                          child: Text(
-                            _errorMessage!,
-                            style: TextStyle(
-                              color: Colors.red.shade800,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
+                        FormErrorBanner(message: _errorMessage!),
                       if (_errorMessage == null) ...[
                         AppSpacing.h24,
                       ] else ...[
