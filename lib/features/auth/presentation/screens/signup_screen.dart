@@ -4,7 +4,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:synk/core/app_colors.dart';
 import 'package:synk/core/constants/app_assets.dart';
 import 'package:synk/core/constants/app_spacing.dart';
+import 'package:synk/core/utils/error_messages.dart';
 import 'package:synk/core/utils/validators.dart';
+import 'package:synk/core/widgets/app_bottom_sheet.dart';
 import 'package:synk/core/widgets/button.dart';
 import 'package:synk/core/widgets/form_error_banner.dart';
 import 'package:synk/features/auth/presentation/screens/signin_screen.dart';
@@ -63,14 +65,58 @@ class _SignupScreenState extends State<SignupScreen> {
         data: {'display_name': _usernameController.text.trim()},
       );
 
-      if (res.user != null && mounted) {
-        Console.log(res.user);
+      if (res.user == null) {
+        setState(() => errorMessage = 'Sign up failed. Please try again.');
+        return;
+      }
+
+      // Supabase returns an empty identities list when the email is already registered
+      if (res.user!.identities == null || res.user!.identities!.isEmpty) {
+        setState(
+          () => errorMessage =
+              'An account with this email already exists. Please sign in.',
+        );
+        return;
+      }
+
+      if (mounted) {
+        AppBottomSheet.show(
+          context,
+          icon: const Icon(
+            Icons.mark_email_read_outlined,
+            size: 40,
+            color: Color(0xFF04172C),
+          ),
+          title: 'Check your email',
+          description:
+              'We sent a confirmation link to ${_emailController.text.trim()}. Tap the link to verify your account.',
+          items: const [
+            AppBottomSheetItem(
+              icon: Icons.mail_outline,
+              text:
+                  'Check your inbox (and spam folder) for the confirmation email.',
+            ),
+            AppBottomSheetItem(
+              icon: Icons.login,
+              text: 'Once confirmed, you can sign in with your credentials.',
+            ),
+          ],
+          buttonText: 'Go to Sign In',
+          onPressed: () {
+            Navigator.pop(context); // close bottom sheet
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const SigninScreen()),
+            );
+          },
+        );
       }
     } on AuthException catch (e) {
-      setState(() => errorMessage = e.message);
+      Console.error('Sign up failed: ${e.toString()}');
+      setState(() => errorMessage = AuthErrorMessages.fromException(e));
     } catch (e) {
       Console.error('Sign up failed: ${e.toString()}');
-      setState(() => errorMessage = 'Sign up failed. ${e.toString()}');
+      setState(() => errorMessage = 'Something went wrong. Please try again.');
     } finally {
       if (mounted) setState(() => isLoading = false);
     }

@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:synk/core/app_colors.dart';
 import 'package:synk/core/constants/app_assets.dart';
 import 'package:synk/core/constants/app_spacing.dart';
 import 'package:synk/core/widgets/button.dart';
 import 'package:synk/core/widgets/form_error_banner.dart';
 import 'package:synk/features/auth/presentation/screens/signup_screen.dart';
+import 'package:synk/features/auth/state/auth_controller.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_gradient_header.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_input.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_section_divider.dart';
 import 'package:synk/features/auth/presentation/widgets/auth_third_party.dart';
 import 'package:synk/core/utils/validators.dart';
-import 'package:synk/utils/app_logger.dart';
 
-class SigninScreen extends StatefulWidget {
+class SigninScreen extends ConsumerStatefulWidget {
   const SigninScreen({super.key});
 
   @override
-  State<SigninScreen> createState() => _SigninScreenState();
+  ConsumerState<SigninScreen> createState() => _SigninScreenState();
 }
 
-class _SigninScreenState extends State<SigninScreen> {
+class _SigninScreenState extends ConsumerState<SigninScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false;
-  String? _errorMessage;
   String? _emailError;
   String? _passwordError;
 
@@ -47,31 +45,24 @@ class _SigninScreenState extends State<SigninScreen> {
   void signInWithEmail() async {
     if (!_validateInputs()) return;
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final res = await Supabase.instance.client.auth.signInWithPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      if (res.user != null && mounted) {
-        Console.log('User signed in: ${res.user}');
-      }
-    } on AuthException catch (e) {
-      setState(() => _errorMessage = e.message);
-    } catch (e) {
-      setState(() => _errorMessage = 'Sign in failed: ${e.toString()}');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    await ref
+        .read(authControllerProvider.notifier)
+        .signInWithEmail(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authControllerProvider);
+
+    ref.listen<AppAuthState>(authControllerProvider, (previous, next) {
+      if (next.isAuthenticated) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    });
+
     return Material(
       color: const Color(0xFFF7F8FA),
       child: Column(
@@ -104,10 +95,10 @@ class _SigninScreenState extends State<SigninScreen> {
                           fontFamily: GoogleFonts.inter().fontFamily,
                         ),
                       ),
-                      if (_errorMessage != null) ...[AppSpacing.h12],
-                      if (_errorMessage != null)
-                        FormErrorBanner(message: _errorMessage!),
-                      if (_errorMessage == null) ...[
+                      if (authState.error != null) ...[AppSpacing.h12],
+                      if (authState.error != null)
+                        FormErrorBanner(message: authState.error!),
+                      if (authState.error == null) ...[
                         AppSpacing.h24,
                       ] else ...[
                         AppSpacing.h12,
@@ -120,6 +111,11 @@ class _SigninScreenState extends State<SigninScreen> {
                         onChanged: (_) {
                           if (_emailError != null) {
                             setState(() => _emailError = null);
+                          }
+                          if (authState.error != null) {
+                            ref
+                                .read(authControllerProvider.notifier)
+                                .clearError();
                           }
                         },
                       ),
@@ -134,14 +130,19 @@ class _SigninScreenState extends State<SigninScreen> {
                           if (_passwordError != null) {
                             setState(() => _passwordError = null);
                           }
+                          if (authState.error != null) {
+                            ref
+                                .read(authControllerProvider.notifier)
+                                .clearError();
+                          }
                         },
                       ),
                       AppSpacing.h24,
                       Button(
                         text: "Sign In",
-                        isLoading: _isLoading,
+                        isLoading: authState.isLoading,
                         loadingText: "Signing in...",
-                        onPressed: signInWithEmail,
+                        onPressed: authState.isLoading ? null : signInWithEmail,
                       ),
                       AppSpacing.h24,
                       const AuthSectionDivider(),
