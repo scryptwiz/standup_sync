@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:synk/core/utils/error_messages.dart';
-import 'package:synk/utils/app_logger.dart';
 
 class AppAuthState {
   final User? user;

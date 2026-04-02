@@ -47,7 +47,7 @@ class TaskTrackerScreen extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 itemCount: tasks.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, index) => const SizedBox(height: 10),
                 itemBuilder: (BuildContext context, int index) {
                   final task = tasks[index];
                   return Card(

@@ -142,10 +142,10 @@ class Button extends StatelessWidget {
           gradient: LinearGradient(
             colors: isDisabled
                 ? [
-                    AppColors.gradientStart.withValues(alpha: 0.55),
-                    AppColors.gradientEnd.withValues(alpha: 0.55),
+                    AppColors.navyDeep.withValues(alpha: 0.55),
+                    AppColors.navyMid.withValues(alpha: 0.55),
                   ]
-                : [AppColors.gradientStart, AppColors.gradientEnd],
+                : [AppColors.navyDeep, AppColors.navyMid],
             transform: const GradientRotation(0.7853981634),
           ),
           borderRadius: BorderRadius.circular(12),

@@ -17,7 +17,7 @@ class AuthTopGradientHeader extends StatelessWidget {
         child: DecoratedBox(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.gradientStart, AppColors.gradientEnd],
+              colors: [AppColors.navyDeep, AppColors.navyMid],
               transform: GradientRotation(0.7853981634),
             ),
           ),

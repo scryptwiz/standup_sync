@@ -11,10 +11,8 @@ class AppColors {
 
   static const Color borderSubtle = Color(0xFFE5E7EB);
 
-  // Gradient colors (containers/buttons)
+  static const Color white = Color(0xFFFFFFFF);
   static const Color lightGray = Color(0xFFD9DDE3); // light gray
   static const Color navyDeep = Color(0xFF04172C); // darkest navy
   static const Color navyMid = Color(0xFF1A2C42); // lighter navy
-  static const Color gradientStart = Color(0xFF04172C);
-  static const Color gradientEnd = Color(0xFF1A2C42);
 }

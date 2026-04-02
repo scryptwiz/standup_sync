@@ -32,7 +32,7 @@ class VoiceToNoteScreen extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 itemCount: DummyData.standups.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                separatorBuilder: (_, index) => const SizedBox(height: 12),
                 itemBuilder: (BuildContext context, int index) {
                   final entry = DummyData.standups[index];
                   return Card(

@@ -38,21 +38,11 @@ class SecureSessionStorage extends LocalStorage {
     }
 
     try {
-      final decoded = jsonDecode(persistedSession);
-      if (decoded is! Map<String, dynamic>) return null;
-
-      final currentSession = decoded['currentSession'];
-      if (currentSession is Map<String, dynamic>) {
-        final token = currentSession['access_token'];
-        if (token is String) return token;
-      }
-
-      final directToken = decoded['access_token'];
-      if (directToken is String) return directToken;
+      jsonDecode(persistedSession);
+      return persistedSession;
     } catch (_) {
+      await _storage.delete(key: _storageKey);
       return null;
     }
-
-    return null;
   }
 }
