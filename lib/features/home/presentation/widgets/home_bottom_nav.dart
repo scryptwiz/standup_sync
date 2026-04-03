@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:synk/core/app_colors.dart';
 import 'package:synk/features/home/presentation/widgets/home_nav_config.dart';
-import 'package:synk/features/home/presentation/widgets/nav_item.dart';
+import 'package:synk/features/home/presentation/widgets/home_nav_item.dart';
 
 class HomeBottomNav extends StatelessWidget {
   final int selectedIndex;
@@ -14,48 +15,28 @@ class HomeBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _BottomNavSurface(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          for (int i = 0; i < homeNavItems.length; i++)
-            NavItem(
-              icon: homeNavItems[i].icon,
-              activeIcon: homeNavItems[i].activeIcon,
-              label: homeNavItems[i].label,
-              selected: selectedIndex == i,
-              onTap: () => onDestinationSelected(i),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BottomNavSurface extends StatelessWidget {
-  final Widget child;
-
-  const _BottomNavSurface({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 20,
-            offset: Offset(0, -4),
-          ),
-        ],
+        color: AppColors.navyDeep,
+        border: Border(top: BorderSide(color: Color(0xFF1A2C42), width: 1)),
       ),
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-          child: child,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              for (int i = 0; i < homeNavItems.length; i++)
+                NavItem(
+                  icon: homeNavItems[i].icon,
+                  activeIcon: homeNavItems[i].activeIcon,
+                  label: homeNavItems[i].label,
+                  selected: selectedIndex == i,
+                  onTap: () => onDestinationSelected(i),
+                ),
+            ],
+          ),
         ),
       ),
     );

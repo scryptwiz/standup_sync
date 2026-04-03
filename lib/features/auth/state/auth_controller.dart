@@ -50,14 +50,23 @@ class AuthController extends StateNotifier<AppAuthState> {
     final currentSession = _client.auth.currentSession;
     state = state.copyWith(user: currentSession?.user, session: currentSession);
 
-    _authSubscription = _client.auth.onAuthStateChange.listen((data) {
-      state = state.copyWith(
-        user: data.session?.user,
-        session: data.session,
-        isLoading: false,
-        error: null,
-      );
-    });
+    _authSubscription = _client.auth.onAuthStateChange.listen(
+      (data) {
+        if (data.session == null) {
+          state = AppAuthState.empty;
+        } else {
+          state = state.copyWith(
+            user: data.session!.user,
+            session: data.session,
+            isLoading: false,
+            error: null,
+          );
+        }
+      },
+      onError: (_) {
+        state = AppAuthState.empty;
+      },
+    );
   }
 
   Future<void> signInWithEmail(String email, String password) async {
