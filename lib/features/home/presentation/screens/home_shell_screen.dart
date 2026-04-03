@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:synk/core/app_colors.dart';
 import 'package:synk/core/widgets/app_toast.dart';
 import 'package:synk/features/auth/presentation/screens/signin_screen.dart';
 import 'package:synk/features/auth/state/auth_controller.dart';
@@ -114,6 +115,7 @@ class _HomeShellScreenState extends ConsumerState<HomeShellScreen>
     });
 
     return Scaffold(
+      backgroundColor: AppColors.navyDeep,
       body: _screens[_selectedIndex.clamp(0, _screens.length - 1)],
       bottomNavigationBar: HomeBottomNav(
         selectedIndex: _selectedIndex,
@@ -164,37 +166,65 @@ class _PlaceholderPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF4F7FB),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFDDE2EB)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 42, color: const Color(0xFF2A5970)),
-                const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: const Color(0xFF566273),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF04172C),
+            Color(0xFF0A2540),
+            Color(0xFF0D2D4A),
+          ],
+          stops: [0.0, 0.55, 1.0],
+        ),
+      ),
+      child: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: AppColors.glassWhite08,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.glassWhite12),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: AppColors.tealAccent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Icon(
+                      icon,
+                      size: 32,
+                      color: AppColors.tealAccent,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 18),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

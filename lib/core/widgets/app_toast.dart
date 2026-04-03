@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:synk/core/app_colors.dart';
 
 enum AppToastType { success, error }
 
@@ -30,53 +31,94 @@ class AppToast {
           right: 16,
           child: Material(
             color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(
-                color: style.background,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: style.borderColor, width: 1.2),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x1F000000),
-                    blurRadius: 14,
-                    offset: Offset(0, 6),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Icon(style.icon, color: style.iconColor),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      message,
-                      style: TextStyle(
-                        color: style.textColor,
-                        fontWeight: FontWeight.w600,
-                      ),
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 350),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, child) {
+                return Transform.translate(
+                  offset: Offset(0, -20 * (1 - value)),
+                  child: Opacity(opacity: value, child: child),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: style.background,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: style.borderColor, width: 1.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: style.glowColor,
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  if (actionLabel != null && onAction != null) ...[
-                    const SizedBox(width: 8),
-                    TextButton(
-                      onPressed: onAction,
-                      style: TextButton.styleFrom(
-                        foregroundColor: style.actionColor,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        minimumSize: const Size(0, 30),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(actionLabel),
+                    const BoxShadow(
+                      color: Color(0x40000000),
+                      blurRadius: 12,
+                      offset: Offset(0, 6),
                     ),
                   ],
-                ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: style.iconBgColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        style.icon,
+                        color: style.iconColor,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          color: style.textColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    if (actionLabel != null && onAction != null) ...[
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: onAction,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: style.actionBgColor,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: style.actionBorderColor,
+                            ),
+                          ),
+                          child: Text(
+                            actionLabel,
+                            style: TextStyle(
+                              color: style.actionColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -138,22 +180,30 @@ class AppToast {
   static _AppToastStyle _styleFor(AppToastType type) {
     switch (type) {
       case AppToastType.success:
-        return const _AppToastStyle(
-          icon: Icons.check_circle_rounded,
-          background: Color(0xFFE8F8EE),
-          borderColor: Color(0xFF86D7A5),
-          textColor: Color(0xFF14532D),
-          iconColor: Color(0xFF15803D),
-          actionColor: Color(0xFF166534),
+        return _AppToastStyle(
+          icon: Icons.wifi_rounded,
+          background: AppColors.navyDeep,
+          borderColor: AppColors.tealAccent.withValues(alpha: 0.25),
+          glowColor: AppColors.tealAccent.withValues(alpha: 0.12),
+          textColor: Colors.white.withValues(alpha: 0.9),
+          iconColor: AppColors.tealAccent,
+          iconBgColor: AppColors.tealAccent.withValues(alpha: 0.15),
+          actionColor: AppColors.tealAccent,
+          actionBgColor: AppColors.tealAccent.withValues(alpha: 0.1),
+          actionBorderColor: AppColors.tealAccent.withValues(alpha: 0.25),
         );
       case AppToastType.error:
-        return const _AppToastStyle(
-          icon: Icons.error_rounded,
-          background: Color(0xFFFFEFEF),
-          borderColor: Color(0xFFF6A7A7),
-          textColor: Color(0xFF7F1D1D),
-          iconColor: Color(0xFFB91C1C),
-          actionColor: Color(0xFF9F1239),
+        return _AppToastStyle(
+          icon: Icons.wifi_off_rounded,
+          background: AppColors.navyDeep,
+          borderColor: const Color(0xFFFF4444).withValues(alpha: 0.3),
+          glowColor: const Color(0xFFFF4444).withValues(alpha: 0.1),
+          textColor: Colors.white.withValues(alpha: 0.9),
+          iconColor: const Color(0xFFFF6B6B),
+          iconBgColor: const Color(0xFFFF4444).withValues(alpha: 0.12),
+          actionColor: const Color(0xFFFF6B6B),
+          actionBgColor: const Color(0xFFFF4444).withValues(alpha: 0.1),
+          actionBorderColor: const Color(0xFFFF4444).withValues(alpha: 0.25),
         );
     }
   }
@@ -163,16 +213,24 @@ class _AppToastStyle {
   final IconData icon;
   final Color background;
   final Color borderColor;
+  final Color glowColor;
   final Color textColor;
   final Color iconColor;
+  final Color iconBgColor;
   final Color actionColor;
+  final Color actionBgColor;
+  final Color actionBorderColor;
 
   const _AppToastStyle({
     required this.icon,
     required this.background,
     required this.borderColor,
+    required this.glowColor,
     required this.textColor,
     required this.iconColor,
+    required this.iconBgColor,
     required this.actionColor,
+    required this.actionBgColor,
+    required this.actionBorderColor,
   });
 }
