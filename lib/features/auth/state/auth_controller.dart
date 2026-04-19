@@ -5,6 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:synk/core/utils/error_messages.dart';
 
+/// Sentinel so [AppAuthState.copyWith] can set nullable fields to `null`.
+class _Unset {
+  const _Unset();
+}
+
+const _unset = _Unset();
+
 class AppAuthState {
   final User? user;
   final Session? session;
@@ -21,16 +28,16 @@ class AppAuthState {
   bool get isAuthenticated => user != null && session != null;
 
   AppAuthState copyWith({
-    User? user,
-    Session? session,
-    bool? isLoading,
-    String? error,
+    Object? user = _unset,
+    Object? session = _unset,
+    Object? isLoading = _unset,
+    Object? error = _unset,
   }) {
     return AppAuthState(
-      user: user ?? this.user,
-      session: session ?? this.session,
-      isLoading: isLoading ?? this.isLoading,
-      error: error,
+      user: identical(user, _unset) ? this.user : user as User?,
+      session: identical(session, _unset) ? this.session : session as Session?,
+      isLoading: identical(isLoading, _unset) ? this.isLoading : isLoading as bool,
+      error: identical(error, _unset) ? this.error : error as String?,
     );
   }
 
@@ -77,6 +84,15 @@ class AuthController extends StateNotifier<AppAuthState> {
         email: email,
         password: password,
       );
+
+      if (response.session == null) {
+        state = state.copyWith(
+          isLoading: false,
+          error:
+              'Could not start a session. If you just signed up, confirm your email first.',
+        );
+        return;
+      }
 
       state = state.copyWith(
         user: response.user,

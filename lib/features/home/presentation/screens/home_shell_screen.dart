@@ -10,7 +10,6 @@ import 'package:synk/features/auth/state/auth_controller.dart';
 import 'package:synk/features/home/presentation/widgets/home_bottom_nav.dart';
 import 'package:synk/features/standup/presentation/screens/standup_history_screen.dart';
 import 'package:synk/features/standup/presentation/screens/voice_to_note_screen.dart';
-import 'package:synk/features/tasks/presentation/screens/task_tracker_screen.dart';
 
 class HomeShellScreen extends ConsumerStatefulWidget {
   const HomeShellScreen({super.key});
@@ -28,7 +27,6 @@ class _HomeShellScreenState extends ConsumerState<HomeShellScreen>
   static const List<Widget> _screens = <Widget>[
     VoiceToNoteScreen(),
     StandupHistoryScreen(),
-    TaskTrackerScreen(),
     _LeaderboardPlaceholderScreen(),
     _ProfilePlaceholderScreen(),
   ];
@@ -139,16 +137,39 @@ class _LeaderboardPlaceholderScreen extends StatelessWidget {
   }
 }
 
-class _ProfilePlaceholderScreen extends StatelessWidget {
+class _ProfilePlaceholderScreen extends ConsumerWidget {
   const _ProfilePlaceholderScreen();
 
   @override
-  Widget build(BuildContext context) {
-    return const _PlaceholderPane(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _PlaceholderPane(
       title: 'Profile',
       message:
           'Personal stats, streak badges, and account settings are coming next.',
       icon: Icons.person_rounded,
+      extraContent: Column(
+        children: [
+          const SizedBox(height: 24),
+          TextButton.icon(
+            onPressed: () {
+              ref.read(authControllerProvider.notifier).signOut();
+            },
+            icon: const Icon(Icons.logout_rounded, size: 20),
+            label: const Text(
+              'Sign out',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFFFF6B6B),
+              backgroundColor: const Color(0xFFFF4444).withValues(alpha: 0.12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -157,11 +178,13 @@ class _PlaceholderPane extends StatelessWidget {
   final String title;
   final String message;
   final IconData icon;
+  final Widget? extraContent;
 
   const _PlaceholderPane({
     required this.title,
     required this.message,
     required this.icon,
+    this.extraContent,
   });
 
   @override
@@ -171,11 +194,7 @@ class _PlaceholderPane extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF04172C),
-            Color(0xFF0A2540),
-            Color(0xFF0D2D4A),
-          ],
+          colors: [Color(0xFF04172C), Color(0xFF0A2540), Color(0xFF0D2D4A)],
           stops: [0.0, 0.55, 1.0],
         ),
       ),
@@ -200,11 +219,7 @@ class _PlaceholderPane extends StatelessWidget {
                       color: AppColors.tealAccent.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    child: Icon(
-                      icon,
-                      size: 32,
-                      color: AppColors.tealAccent,
-                    ),
+                    child: Icon(icon, size: 32, color: AppColors.tealAccent),
                   ),
                   const SizedBox(height: 18),
                   Text(
@@ -223,6 +238,7 @@ class _PlaceholderPane extends StatelessWidget {
                       height: 1.4,
                     ),
                   ),
+                  ?extraContent,
                 ],
               ),
             ),

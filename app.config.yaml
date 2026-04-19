@@ -1,0 +1,15 @@
+# App config (Expo / EAS-style): edit this file, then apply native updates with:
+#   dart run tool/apply_app_config.dart
+#
+# iOS values are written as INFOPLIST_KEY_* lines into ios/Flutter/Debug.xcconfig
+# and Release.xcconfig (merged into the built Info.plist by Xcode).
+
+ios:
+  info_plist:
+    # Privacy — microphone (required for standup recording)
+    NSMicrophoneUsageDescription: Synk records your voice so you can capture daily standup notes.
+
+android:
+  # The `record` plugin merges RECORD_AUDIO; list extras here only if you add plugins that need them.
+  # This tool does not modify android/app/src/main/AndroidManifest.xml by default.
+  extra_permissions: []

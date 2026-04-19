@@ -9,7 +9,6 @@ const homeNavItems = <HomeNavConfig>[
     activeIcon: Icons.history_rounded,
     label: 'History',
   ),
-  (icon: Icons.task_rounded, activeIcon: Icons.task_rounded, label: 'Tasks'),
   (
     icon: Icons.leaderboard,
     activeIcon: Icons.leaderboard,

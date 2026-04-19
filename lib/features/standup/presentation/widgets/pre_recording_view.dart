@@ -6,7 +6,8 @@ import 'package:synk/features/standup/presentation/widgets/prompt_card.dart';
 import 'package:synk/features/standup/presentation/widgets/stat_pills.dart';
 
 class PreRecordingView extends StatefulWidget {
-  final VoidCallback onStartRecording;
+  final Future<void> Function() onStartRecording;
+
   const PreRecordingView({super.key, required this.onStartRecording});
 
   @override
@@ -65,7 +66,7 @@ class _PreRecordingViewState extends State<PreRecordingView>
               Center(
                 child: AnimatedMicButton(
                   controller: _pulseController,
-                  onTap: widget.onStartRecording,
+                  onTap: () => widget.onStartRecording(),
                 ),
               ),
               const SizedBox(height: 28),

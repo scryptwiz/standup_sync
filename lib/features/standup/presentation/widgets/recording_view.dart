@@ -7,8 +7,14 @@ import 'package:synk/features/standup/presentation/widgets/recording_timer.dart'
 import 'package:synk/features/standup/presentation/widgets/stop_button.dart';
 
 class RecordingView extends StatefulWidget {
+  final String elapsedFormatted;
   final VoidCallback onStopRecording;
-  const RecordingView({super.key, required this.onStopRecording});
+
+  const RecordingView({
+    super.key,
+    required this.elapsedFormatted,
+    required this.onStopRecording,
+  });
 
   @override
   State<RecordingView> createState() => _RecordingViewState();
@@ -44,7 +50,7 @@ class _RecordingViewState extends State<RecordingView>
             const Center(child: RecordingPill()),
             const SizedBox(height: 20),
             // Timer
-            const Center(child: RecordingTimer(elapsed: '02:45')),
+            Center(child: RecordingTimer(elapsed: widget.elapsedFormatted)),
             const SizedBox(height: 8),
             Center(
               child: Text(

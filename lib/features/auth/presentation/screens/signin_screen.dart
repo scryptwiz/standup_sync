@@ -57,12 +57,6 @@ class _SigninScreenState extends ConsumerState<SigninScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
 
-    ref.listen<AppAuthState>(authControllerProvider, (previous, next) {
-      if (next.isAuthenticated) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-      }
-    });
-
     return Material(
       color: const Color(0xFFF7F8FA),
       child: Column(

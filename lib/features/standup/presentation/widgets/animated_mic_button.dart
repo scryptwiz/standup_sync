@@ -16,20 +16,21 @@ class AnimatedMicButton extends StatelessWidget {
     return SizedBox(
       width: 220,
       height: 220,
-      child: AnimatedBuilder(
-        animation: controller,
-        builder: (context, child) {
-          return CustomPaint(
-            painter: _SonarRingsPainter(
-              progress: controller.value,
-              ringColor: AppColors.tealAccent,
-            ),
-            child: child,
-          );
-        },
-        child: Center(
-          child: GestureDetector(
-            onTap: onTap,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            return CustomPaint(
+              painter: _SonarRingsPainter(
+                progress: controller.value,
+                ringColor: AppColors.tealAccent,
+              ),
+              child: child,
+            );
+          },
+          child: Center(
             child: Container(
               width: 110,
               height: 110,
